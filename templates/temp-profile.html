@@ -1,0 +1,162 @@
+<!--
+=========================================================
+* Paper Dashboard 2 - v2.0.1
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/paper-dashboard-2
+* Copyright 2020 Creative Tim (https://www.creative-tim.com)
+
+Coded by www.creative-tim.com
+
+ =========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+
+
+{% extends 'inc/main_base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+
+<div class="row">
+  <div class="col-sm-7">
+
+    <div class="card">
+      <!--tips: add .text-center,.text-right to the .card to change card text alignment-->
+      <div class="mt-4">
+        <div class="text-center">
+          <img 
+          style="width: 100px; height: 100px;"
+          src="media/{{ employee.profile_picture }}" 
+          class="profile-picture-icon" alt="...">
+
+          
+        </div>
+      </div>
+      
+      <div class="row mt-4 px-4">
+
+        <div class="col-sm-12 pb-4">
+          <div class="text-center d-flex justify-content-center align-items-center">
+            <h2 class="my-0"><b>{{ employee.full_name }}</b></h2>
+            <div class="d-flex align-items-center justify-content-center">
+              <div class="d-flex align-items-center mb-0 ml-2">
+                {% if employee.is_active %}
+                    <span class="badge badge-success">Active</span>
+                {% else %}
+                    <span class="badge badge-danger">In-active</span>
+                {% endif %}          
+              </div>
+            </div>
+          </div>
+          <hr class="mx-5">
+        </div>
+
+        <div class="col-sm-6 pb-2">
+          <div class="d-flex align-items-center mb-3">
+            <i class="material-icons" style="font-size: 19px;">email</i>
+            <h4 class="mb-0 ml-2">{{ employee.email }}</h4>
+          </div>
+        </div>
+
+        <div class="col-sm-6 pb-2">
+          <div class="d-flex align-items-center mb-3">
+            <i class="material-icons" style="font-size: 19px;">phone</i>
+            <h5 class="mb-0 ml-2">+{{ employee.phone }}</h5>
+          </div>
+        </div>
+
+        <div class="col-sm-6 pb-2">
+          <div class="d-flex align-items-center mb-3">
+            <i class="material-icons" style="font-size: 19px;">work</i>
+            <h5 class="mb-0 ml-2">{{ employee.designation }}</h5>
+          </div>
+        </div>
+
+        <div class="col-sm-6 pb-2">
+          <div class="d-flex align-items-center mb-3">
+            <i class="material-icons" style="font-size: 19px;">workspace_premium</i>
+            <h5 class="mb-0 ml-2">{{ employee.specialized_in }}</h5>
+          </div>
+        </div>
+
+        <div class="col-sm-6 pb-2">
+          <div class="d-flex align-items-center mb-3">
+            <i class="material-icons" style="font-size: 19px;">engineering</i>
+            <h5 class="mb-0 ml-2">{{ employee.projects }}</h5>
+          </div>
+        </div>
+
+        <div class="col-sm-6 pb-2">
+          <div class="d-flex align-items-center mb-3">
+            <i class="material-icons" style="font-size: 19px;">wifi_calling_3</i>
+            <h5 class="mb-0 ml-2">{{ employee.telephone }}</h5>
+          </div>
+        </div>
+
+        <div class="col-sm-6 pb-2">
+          <div class="d-flex align-items-center mb-3">
+            <i class="material-icons" style="font-size: 19px;">event</i>
+            <h5 class="mb-0 ml-2">Born - {{ employee.birthday }}</h5>
+          </div>
+        </div>
+
+
+        <div class="col-sm-6 pb-2">
+          <div class="d-flex align-items-center mb-0">
+            <i class="material-icons" style="font-size: 19px;">history</i>
+            <h5 class="mb-0 ml-2">joined - {{ employee.member_since.date }}</h5>
+          </div>
+        </div>
+
+        <div class="col-sm-6 pb-2">
+            <div class="d-flex align-items-center mb-0">
+              <i class="material-icons" style="font-size: 19px;">business</i>
+              <h5 class="mb-0 ml-2">{{ employee.company.name }}</h5>
+            </div>
+          </div>
+
+        
+      </div>
+
+      <!-- <hr class="text-white bg-white" style="opacity: 0;"> -->
+
+
+    
+    </div>
+    
+  
+  </div>
+
+  <div class="col-sm-5">
+    <div class="">
+        <!-- <h4 class="mb-0 mt-3 ml-3">ID card</h4> -->
+        <div class="bg-white border-10">
+          {% include employee.company.card_template.full_path %}
+          
+        </div>
+       
+    </div>
+  </div>
+</div>
+
+<script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<script src="{% static 'assets/js/employee.js' %}"></script>
+<script src="{% static 'assets/js/picture-upload.js' %}"></script>
+
+<script>
+  $("#employee_profile_picture_input").prop("required", false);
+  let data = '{{ employee.getJson | safe }}';
+  let index = "{{ index }}"
+  open_id_card(data, index, false);
+  $("#birthday-input").val(selected_employee.birthday);
+
+
+
+</script>
+
+{% endblock content %}

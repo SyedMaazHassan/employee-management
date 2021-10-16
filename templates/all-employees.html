@@ -1,0 +1,238 @@
+{% extends 'inc/main_base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div id="mySidenav" class="sidenav">
+    <div class="p-4">
+        <div class="row">
+            <div class="col-sm-7 d-flex align-items-center">
+                <h4 class="my-0">Add new employee</h4>
+            </div>
+
+
+
+            <div class="col-sm-5 d-flex align-items-center justify-content-end">
+                <i 
+                    onclick="closeNav()"
+                    class="material-icons mk-pointer myIco ml-2 text-secondary" 
+                    title="Add new translation">
+                    close
+                </i>
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-sm-12 pt-3">
+
+
+                {% for message in messages %}
+                    <div class="alert {% if message.level == 20 %}alert-success{% else %}alert-danger{% endif %} mb-3 alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+
+                <form class="forms-sample" action="{% url 'save-employee' %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}                
+                    {% include 'inc/employee-form.html' %}
+                    <button type="submit" class="btn btn-primary mr-2">Save employee</button>
+                </form>
+
+            </div>
+
+
+        </div>
+       
+
+    </div>
+
+</div>
+
+<div class="modal fade" id="id-card-modal" tabindex="-1" role="dialog" aria-labelledby="myModal-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalTitle">ID card</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!--Modal content-->
+                <div>
+                    {% include company.card_template.full_path %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary text-white" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="download_btn">Download to print</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+            <div class="col-sm-6 d-flex align-items-center">
+                <h3 class="mb-3">All employees</h3>
+            </div>
+
+            <div class="col-sm-6 d-flex justify-content-end">
+                <button type="button" 
+                    id="add-new-employee-btn"
+                    onclick="openNav()"
+                    class="btn d-flex align-items-center btn-outline-primary mb-3">
+                    <i class="material-icons mr-2">add</i>
+                    Add new employee
+                </button>
+
+                {% if not request.GET.deleted %}
+                    <button type="button" 
+                        id="add-new-employee-btn"
+                        onclick="openDeletedPage(true)"
+                        class="btn ml-3 d-flex align-items-center btn-outline-danger mb-3">
+                        <i class="material-icons mr-2">delete</i>
+                        See deleted employees
+                    </button>
+
+                {% else %}
+                    <button type="button" 
+                        id="add-new-employee-btn"
+                        onclick="openDeletedPage(false)"
+                        class="btn ml-3 d-flex align-items-center btn-outline-success mb-3">
+                        <i class="material-icons mr-2">delete</i>
+                        See active employees
+                    </button>
+                {% endif %}
+            </div>
+
+            
+        </div>
+
+
+        <div class="row">
+          <div class="col-12">
+            <div class="table-responsive" id="myIdCard1">
+
+                <table class="table table-striped display expandable-table">
+                    <thead>
+                      <tr>
+                        <th>Employee</th>
+                        <th>Full name</th>
+                        <th>Email</th>
+                        <th>Designation</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Member since</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for employee in all_employees %}
+                      <tr>
+                        <td class="py-1">
+                          <img src="media/{{ employee.profile_picture }}" alt="image" />
+                        </td>
+                        <td>
+                            <a href="{% url 'employee' employee.id %}">
+                                {{ employee.full_name }}
+                            </a>
+                        </td>
+                        <td>{{ employee.email }}</td>
+                        <td>{{ employee.designation }}</td>
+                        <td>{{ employee.phone }}</td>
+                        <td>
+                            {% if employee.is_active %}
+                                <span class="badge badge-success">Active</span>
+                            {% else %}
+                                <span class="badge badge-danger">In-active</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ employee.member_since }}
+                        </td>
+                        <td>
+                            <i 
+                                class="material-icons mk-pointer"
+                                title="Open id card"
+                                onclick="open_id_card('{{ employee.getJson }}', '{{ forloop.counter }}')">visibility</i>
+                        </td>
+                      </tr>
+                      {% endfor %}
+
+                      {% if not all_employees %}
+                        <tr>
+                            <td colspan="8">
+                                <div class="text-center px-3 py-0">
+                                    <div class="alert alert-warning" role="alert">
+                                        No employee exists right now, click on "Add new employee".
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                      {% endif %}
+           
+                    </tbody>
+                </table>
+
+           
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="canvas">
+
+    </div>
+
+    
+  </div>
+</div>
+
+
+
+<script src="https://raw.githack.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<script src="{% static 'assets/js/employee.js' %}"></script>
+<script src="{% static 'assets/js/picture-upload.js' %}"></script>
+
+<script>
+    var selected_employee = null;
+   
+    let new_parameter = '{{ request.GET.add_employee }}';
+
+    if (new_parameter == 'true') {
+        setTimeout(() => {
+            $("#add-new-employee-btn").click();        
+        }, 500);
+    }else{
+        // Check browser support
+        if (typeof(Storage) !== "undefined") {
+            let status = localStorage.getItem("add_employee");
+            // Store
+            if (status == "true") {
+                $("#add-new-employee-btn").click();
+            }
+        }
+    }
+
+    function openDeletedPage(bool){
+        if (bool) {
+            window.location.href = "all-employees/?deleted=true";            
+        }else{
+            window.location.href = "all-employees/";
+        }
+     
+    }
+
+</script>
+
+
+{% endblock content %}

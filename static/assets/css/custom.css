@@ -1,0 +1,287 @@
+.forms-sample label {
+  color: #4b49ac;
+}
+
+.card-template {
+  width: 100%;
+  height: 200px;
+  background-color: #ffffff;
+  border-radius: 10px 10px 0px 0px;
+}
+
+.id-card {
+  border: solid 1px #cccccc;
+  width: 100%;
+  border-radius: 10px;
+}
+
+.opacity-0 {
+  opacity: 0;
+}
+
+.border-15 {
+  border-radius: 15px;
+}
+
+.selected-template {
+  background-color: #cecdf8;
+}
+
+.border-10 {
+  border-radius: 10px;
+}
+
+.upload-photo {
+  width: 100px;
+  cursor: pointer;
+}
+
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 10000;
+  top: 0;
+  right: 0;
+  background-color: rgb(255, 255, 255);
+  overflow-x: hidden;
+  transition: 0.3s;
+}
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {
+    padding-top: 15px;
+  }
+  .sidenav a {
+    font-size: 18px;
+  }
+}
+
+.radius-10 {
+  border-radius: 0px;
+}
+
+.google-box {
+  box-shadow: 0 0 2px rgb(0 0 0 / 12%), 0 2px 2px rgb(0 0 0 / 24%);
+}
+
+.profile-card {
+  transition-duration: 0.25s;
+  border: solid 1px #eeeeee;
+}
+
+.profile-card-opened {
+  background-color: #e2e2e2;
+}
+
+.profile-card:hover {
+  background-color: #e2e2e2;
+  /* color: #004170; */
+  transition-duration: 0.25s;
+}
+
+.mk-pointer {
+  cursor: pointer;
+}
+
+.heading-color {
+  color: #004170;
+}
+
+.radius-100 {
+  border-radius: 100%;
+}
+
+.primary-button,
+.primary-button:hover {
+  background-color: #004170;
+  color: #ffffff;
+}
+
+.selected-day {
+  background-color: #eaeeff;
+  color: #004170;
+}
+
+.padding-2 {
+  padding: 13px;
+}
+
+.border-primary-color {
+  border: solid 2px #004170;
+}
+
+.line-icon {
+  font-size: 19px;
+}
+
+.single-media {
+  transition-duration: 0.25s;
+  cursor: pointer;
+  border: solid 1px white;
+  color: rgb(63, 63, 63);
+}
+
+.single-media:hover {
+  /* background-color: #fafafa; */
+  transition-duration: 0.25s;
+  border-top: solid 1px #cccccc;
+  border-bottom: solid 1px #cccccc;
+}
+
+.line-edit-icon,
+.line-delete-icon,
+.line-love-icon {
+  transition-duration: 0.25s;
+  font-size: 19px;
+}
+
+.line-edit-icon:hover {
+  color: #0275d8;
+  transition-duration: 0.25s;
+}
+
+.line-delete-icon:hover {
+  color: #d9534f;
+  transition-duration: 0.25s;
+}
+
+.loved {
+  color: #d9534f;
+}
+
+.line-love-icon:hover {
+  color: #d9534f;
+  transition-duration: 0.25s;
+}
+
+.profile-card {
+  background-color: #f3f3f3;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  padding: 0px 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  padding: 0px 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 20px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.media-name-input-text {
+  height: auto !important;
+}
+
+.media-name-input-text:focus {
+  box-shadow: inset 0 -1px 0 #ffffff;
+}
+
+.border-left-selected {
+  border-left: solid 3px #007bff;
+}
+
+.radius-10 {
+  border-radius: 10px;
+}
+
+.radius-100 {
+  border-radius: 100px;
+}
+
+.google-shadow {
+  box-shadow: 0 0 2px rgb(0 0 0 / 12%), 0 2px 2px rgb(0 0 0 / 24%);
+}
+
+.font-size {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.transaction-card {
+  margin-bottom: 3px;
+}
+
+.transaction-card:hover {
+  border: solid 1px;
+  box-shadow: 0 0 2px rgb(0 0 0 / 12%), 0 2px 2px rgb(0 0 0 / 24%);
+}
+
+.id-card-person {
+  width: 100%;
+  border-radius: 100%;
+}
+
+.card-background-color {
+  background-image: linear-gradient(to right, #00254d, #5a9be0);
+  /* background-color: #00254d; */
+}
+
+.id-card-qr {
+  width: 100%;
+}
+
+.designation-card {
+  background-image: linear-gradient(to left, #00254d, #5a9be0);
+  background-color: #5a9be0;
+  border-radius: 100px;
+  color: white;
+  margin: 7px 0px;
+  padding: 3px 10px;
+  width: fit-content;
+  font-size: 12px;
+}
+
+.profile-picture-icon {
+  border-radius: 100%;
+  width: 80px;
+  height: 80px;
+}
+
+.card-background-color-2 {
+  background-image: linear-gradient(to right, #4d4800, #d3eb6a);
+}
+
+.designation-card-2 {
+  background-image: linear-gradient(to left, #4d4800, #d3eb6a);
+  background-color: #d3eb6a;
+  border-radius: 100px;
+  color: white;
+  margin: 7px 0px;
+  padding: 3px 10px;
+  width: fit-content;
+  font-size: 12px;
+}

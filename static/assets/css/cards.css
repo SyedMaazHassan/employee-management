@@ -1,0 +1,73 @@
+/* body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+} */
+.card {
+  width: 50rem;
+  border: none !important;
+}
+
+.card_1 {
+  width: 40rem;
+  border: none !important;
+}
+
+.company-head {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-right: 5rem;
+  padding-left: 5rem;
+  border-radius: 10px 0px 0px 10px;
+}
+
+.qr-code img {
+  width: 6.5rem;
+}
+
+h5 {
+  font-family: Arial, Helvetica, sans-serif;
+}
+.slogan {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.icons {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50px;
+  width: 60px;
+}
+
+.icon i {
+  font-size: 1.725rem;
+  color: white;
+}
+
+.employee-info {
+  border-radius: 50px 10px 10px 50px !important;
+  padding-right: 10rem;
+  display: flex;
+}
+
+.employee-info h1 {
+  margin-left: 1.5rem !important;
+}
+
+.designation {
+  margin-left: 1.5rem !important;
+}
+
+.other-info {
+  margin-left: 1.8rem !important;
+}
+
+.info-para {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.2rem;
+}
