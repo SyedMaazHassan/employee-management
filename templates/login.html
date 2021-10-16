@@ -3,6 +3,15 @@
 <html lang="en">
 
 {% include 'inc/main_head.html' %}
+<style>
+    .forgot-pass{
+        color: #4B49AC;
+    }
+
+    .forgot-pass:hover{
+        color: #4B49AC;
+    }
+</style>
 
 <body>
     <div class="container-scroller">
@@ -53,6 +62,9 @@
                         <div class="mt-3">
                             <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
                                     type="submit">SIGN IN</button>
+                            <div class="p-2">
+                                <a class="forgot-pass" href="{% url 'reset_password' %}">forgot password?</a>
+                            </div>
                         </div>
                       
                     
