@@ -70,7 +70,8 @@ class Employee(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
     member_since = models.DateTimeField(default=timezone.now)
-    telephone = models.CharField(max_length=13, null=True, blank=True)
+    telephone = models.CharField(
+        max_length=13, null=True, blank=True)
     projects = models.TextField(null=True, blank=True)
     specialized_in = models.CharField(max_length=255, null=True, blank=True)
     is_deleted = models.BooleanField(default=False)
@@ -99,3 +100,10 @@ class Employee(models.Model):
 
     def __str__(self):
         return f'{self.full_name()} - {self.designation} ({self.company.name})'
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.is_active = True
+            self.is_deleted = False
+
+        super(Employee, self).save(*args, **kwargs)

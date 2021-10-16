@@ -239,7 +239,7 @@ def save_employee(request):
 
         # Check if this user has already been created
         query = Employee.objects.filter(
-            email=email,  company=company) | Employee.objects.filter(phone=phone, company=company)
+            email=email,  company=company) | Employee.objects.filter(phone=phone, company=company) 
 
         if query.count() == 0:
             # Creating new employee
