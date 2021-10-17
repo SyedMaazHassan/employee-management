@@ -285,3 +285,18 @@
   width: fit-content;
   font-size: 12px;
 }
+
+.back-logo {
+  background-color: #eeeeee;
+  padding: 5px;
+  border-radius: 100px;
+  color: rgb(53, 53, 53);
+  margin-right: 8px;
+  transition-duration: 0.25s;
+  cursor: pointer;
+}
+
+.back-logo:hover {
+  background-color: #cccccc;
+  transition-duration: 0.25s;
+}

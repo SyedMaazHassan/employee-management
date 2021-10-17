@@ -589,22 +589,24 @@
               </a>
             </li>
 
+            
+
             <li
-              class="
-                nav-item
-                {%
-                if
-                name
-                ==
-                'edit-company-details'
-                %}active{%
-                endif
-                %}
-              "
-            >
+              class="nav-item {% if name == 'edit-company-details' %}active{% endif %}">
               <a class="nav-link" href="{% url 'edit-company-details' %}">
                 <i class="material-icons mr-2 icon-size">edit</i>
                 <span class="menu-title">Edit company details</span>
+              </a>
+            </li>
+
+            <li class="nav-item {% if name == 'change-password' %}active{% endif %}">
+              <a
+                class="nav-link"
+                href="{% url 'change-password' %}"
+              >
+                <i class="material-icons mr-2 icon-size">password</i>
+                <!-- <i class="icon-grid menu-icon"></i> -->
+                <span class="menu-title">Change password</span>
               </a>
             </li>
 

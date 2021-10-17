@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import *
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, request
 from django.http import JsonResponse
 import json
 from django.contrib.auth.decorators import login_required
@@ -11,10 +11,111 @@ from pyzbar import pyzbar
 from PIL import Image
 from django.db.models import Q
 
-# main page function
 
+def validate_password_strength(value):
+    """Validates that a password is as least 7 characters long and has at least
+    1 digit and 1 letter.
+    """
+    min_length = 7
+
+    error_list = []
+
+    if len(value) < min_length:
+        error_list.append(
+            f'Password must be at least {min_length} characters long.')
+
+    # check for digit
+    if not any(char.isdigit() for char in value):
+        error_list.append(
+            f'Password must contain at least 1 digit.')
+
+    # check for letter
+    if not any(char.isalpha() for char in value):
+        error_list.append(
+            f'Password must contain at least 1 letter.')
+
+    if len(error_list) == 0:
+        return {
+            'status': True,
+            'value': value
+        }
+    else:
+        return {
+            'status': False,
+            'value': error_list
+        }
+
+
+@login_required
+def change_password(request):
+    context = {
+        "name": "change-password",
+        "error": None
+    }
+
+    if request.method == "POST":
+        old_password = request.POST['old_password']
+        new_password = request.POST['new_password']
+        new_confirm_password = request.POST['new_confirm_password']
+        checkbox_check = False
+
+        if 'checkbox_check' in request.POST:
+            checkbox_check = request.POST['checkbox_check']
+            if checkbox_check == "on":
+                checkbox_check = True
+
+        context['checked'] = checkbox_check
+        context['old_password'] = old_password
+        context['new_password'] = new_password
+        context['new_confirm_password'] = new_confirm_password
+
+        if request.user.check_password(old_password):
+            if new_password == new_confirm_password:
+                password_validation = validate_password_strength(new_password)
+                if password_validation['status']:
+                    if old_password == new_password:
+                        context['error'] = "Old password and new password can't be same!"
+                    else:
+                        request.user.set_password(new_password)
+                        request.user.save()
+                        messages.info(
+                            request, "Your password has been changed successfully!")
+                        return redirect("logout")
+                else:
+                    context['password_validation'] = password_validation
+            else:
+                context['error'] = "New password and confirm password doesn't match!"
+        else:
+            context['error'] = "Old password is invalid!"
+
+        for i, j in request.POST.items():
+            print(i, "=>", j)
+
+    return render(request, "change_password.html", context)
+
+
+def check_user_email(request):
+    output = {
+        'status': False
+    }
+    try:
+        if request.method == "GET" and request.is_ajax() and 'email' in request.GET:
+            email = request.GET['email']
+            if email:
+                query = User.objects.filter(
+                    email=email) | User.objects.filter(username=email)
+                if query.exists():
+                    output['status'] = True
+                    output['message'] = "Email exists!"
+                else:
+                    output['message'] = "Given email is not registered in our records!"
+    except Exception as e:
+        output['message'] = str(e)
+
+    return JsonResponse(output)
 
 # function for signup
+
 
 def signup(request):
     if request.method == "POST":
@@ -51,9 +152,12 @@ def signup(request):
 
 
 def get_company_by_admin(user_object):
-    company_admin = CompanyAdmin.objects.get(user=user_object)
-    company = Company.objects.get(company_admin=company_admin)
-    return company
+    try:
+        company_admin = CompanyAdmin.objects.get(user=user_object)
+        company = Company.objects.get(company_admin=company_admin)
+        return company
+    except:
+        return redirect("logout")
 # function for login
 
 
@@ -188,6 +292,7 @@ def all_employees(request):
             Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query) | Q(
                 email__icontains=search_query) | Q(designation__icontains=search_query) | Q(phone__icontains=search_query)
         )
+        filtered_records = filtered_records.filter(company=company)
         # all_employees_list = []
         # for employee in all_employees:
         #     if search_query == employee.first_name:
@@ -239,7 +344,7 @@ def save_employee(request):
 
         # Check if this user has already been created
         query = Employee.objects.filter(
-            email=email,  company=company) | Employee.objects.filter(phone=phone, company=company) 
+            email=email,  company=company) | Employee.objects.filter(phone=phone, company=company)
 
         if query.count() == 0:
             # Creating new employee
@@ -438,7 +543,7 @@ def login(request):
             else:
                 return redirect("index")
         else:
-            messages.info(request, "Incorrect login details!")
+            messages.error(request, "Incorrect login details!")
             return render(request, "login.html", context)
             # return redirect("login")
     else:
