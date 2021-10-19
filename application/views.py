@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect
+from ctypes import BigEndianStructure
+from django.shortcuts import get_object_or_404, render, redirect
 from .models import *
 from django.contrib import messages
 from django.http import HttpResponse, request
@@ -10,42 +11,43 @@ import os
 from pyzbar import pyzbar
 from PIL import Image
 from django.db.models import Q
+import datetime
+from django.core.paginator import Paginator
+from .supporting_func import *
 
 
-def validate_password_strength(value):
-    """Validates that a password is as least 7 characters long and has at least
-    1 digit and 1 letter.
-    """
-    min_length = 7
+# View function to update the user status of Activate/De-activate
+@login_required
+def update_employee_status(request):
+    output = {
+        'status': False,
+        'message': None
+    }
 
-    error_list = []
+    company_admin = request.user
+    company = get_company_by_admin(company_admin)
 
-    if len(value) < min_length:
-        error_list.append(
-            f'Password must be at least {min_length} characters long.')
+    # check if company is right
+    if company:
+        id = request.GET['id']
+        is_active = request.GET['is_active']
+        # Get empoyee from DB
+        employee = get_object_or_404(Employee, id=id)
+        if employee.company == company:
+            # Check and changing status
+            if is_active == 'true':
+                employee.activate()
+            else:
+                employee.de_activate()
+            employee.save()
+            output['status'] = True
+            output['message'] = "Record has been updated"
 
-    # check for digit
-    if not any(char.isdigit() for char in value):
-        error_list.append(
-            f'Password must contain at least 1 digit.')
-
-    # check for letter
-    if not any(char.isalpha() for char in value):
-        error_list.append(
-            f'Password must contain at least 1 letter.')
-
-    if len(error_list) == 0:
-        return {
-            'status': True,
-            'value': value
-        }
-    else:
-        return {
-            'status': False,
-            'value': error_list
-        }
+    # Returning output
+    return JsonResponse(output)
 
 
+# View function to change password
 @login_required
 def change_password(request):
     context = {
@@ -54,6 +56,7 @@ def change_password(request):
     }
 
     if request.method == "POST":
+        # Get form submission
         old_password = request.POST['old_password']
         new_password = request.POST['new_password']
         new_confirm_password = request.POST['new_confirm_password']
@@ -69,13 +72,18 @@ def change_password(request):
         context['new_password'] = new_password
         context['new_confirm_password'] = new_confirm_password
 
+        # Checking old password if user enters correct one or not
         if request.user.check_password(old_password):
             if new_password == new_confirm_password:
+                # Validating password strength by our custom function
                 password_validation = validate_password_strength(new_password)
+
+                # Show status of password
                 if password_validation['status']:
                     if old_password == new_password:
                         context['error'] = "Old password and new password can't be same!"
                     else:
+                        # Set password if validation went right
                         request.user.set_password(new_password)
                         request.user.save()
                         messages.info(
@@ -88,23 +96,26 @@ def change_password(request):
         else:
             context['error'] = "Old password is invalid!"
 
-        for i, j in request.POST.items():
-            print(i, "=>", j)
-
+    # Render template after changing the password successfully!
     return render(request, "change_password.html", context)
 
 
+# View function to check email
 def check_user_email(request):
+    '''Check user email, weather user email exists in our record
+       or not and give proper output'''
     output = {
         'status': False
     }
     try:
         if request.method == "GET" and request.is_ajax() and 'email' in request.GET:
+            # Get email input through ajax request
             email = request.GET['email']
             if email:
                 query = User.objects.filter(
                     email=email) | User.objects.filter(username=email)
                 if query.exists():
+                    # Return output
                     output['status'] = True
                     output['message'] = "Email exists!"
                 else:
@@ -114,88 +125,57 @@ def check_user_email(request):
 
     return JsonResponse(output)
 
-# function for signup
 
-
-def signup(request):
-    if request.method == "POST":
-        name = request.POST['name']
-        l_name = request.POST['l_name']
-        email = request.POST['email']
-        pass1 = request.POST['pass1']
-        pass2 = request.POST['pass2']
-        context = {
-            "name": name,
-            "l_name": l_name,
-            "email": email,
-            "pass1": pass1,
-            "pass2": pass2,
-        }
-        if pass1 == pass2:
-            if User.objects.filter(username=email).exists():
-                print("Email already taken")
-                messages.info(request, "Entered email already in use!")
-                context['border'] = "email"
-                return render(request, "signup.html", context)
-
-            user = User.objects.create_user(
-                username=email, first_name=name, password=pass1, last_name=l_name)
-            user.save()
-
-            return redirect("login")
-        else:
-            messages.info(request, "Your pasword doesn't match!")
-            context['border'] = "password"
-            return render(request, "signup.html", context)
-
-    return render(request, "signup.html")
-
-
-def get_company_by_admin(user_object):
-    try:
-        company_admin = CompanyAdmin.objects.get(user=user_object)
-        company = Company.objects.get(company_admin=company_admin)
-        return company
-    except:
-        return redirect("logout")
-# function for login
-
-
-# function for logout
+# View function for logout
 def logout(request):
     auth.logout(request)
     return redirect("index")
 
-# function for rendering the dashboard
 
-
+# View function for rendering the dashboard
 @login_required
 def dashboard(request):
     context = {
         "name": "dashboard"
     }
 
+    # DUMMY code to add multiple employee at once (for testing)
+    '''
+    employee = ['Syed Maaz', 'Hassan', 'Sales manager', 'abc',
+                'Special', datetime.datetime(2000, 1, 1).date()]
+
+    for i in range(0, 25):
+        email = f"hafiz{i}@gmail.com"
+        phone = f"031346546{i}"
+        telephone = f"021346546{i}"
+        company = get_company_by_admin(request.user)
+        new_employee = Employee(
+            first_name=employee[0],
+            last_name=employee[1],
+            email=email,
+            designation=employee[2],
+            phone=phone,
+            birthday=employee[5],
+            company=company,
+            telephone=telephone,
+            projects=employee[3],
+            specialized_in=employee[4]
+        )
+        new_employee.save()
+    '''
+
     return render(request, "index.html", context)
 
 
-def read_qr(image):
-    try:
-        qr_code = pyzbar.decode(image)[0]
-        # convert into string
-        data = qr_code.data.decode("utf-8")
-        return data
-    except:
-        return False
-
-
+# View function to delete the employee
 @login_required
 def delete_employee(request, id):
     try:
+        # Getting employee from DB
         employee = Employee.objects.get(id=id)
         company = get_company_by_admin(request.user)
         if employee.company == company:
-            employee.is_deleted = True
-            employee.is_active = False
+            employee.de_activate()
             employee.save()
             messages.info(request, "Employee has been deleted successfully!")
         else:
@@ -207,6 +187,7 @@ def delete_employee(request, id):
     return redirect("index")
 
 
+# View function to submit QR code
 @login_required
 def upload_qr_code(request):
     if request.method == "POST":
@@ -262,62 +243,92 @@ def upload_qr_code(request):
     return redirect("login")
 
 
+# View function for all employee page
 @login_required
 def all_employees(request):
+    all_employees = []
+    try:
+        # Get company by admin
+        company = get_company_by_admin(request.user)
+        previous = next = None
+        view = request.GET.get('view')
+        search_query = request.GET.get('query')
+        page = request.GET.get('page')
+
+        # Handling which type of employees should be shown
+        if not view:
+            all_employees = Employee.objects.filter(company=company)
+        else:
+            if view == 'all':
+                all_employees = Employee.objects.filter(company=company)
+            elif view == 'active':
+                all_employees = Employee.objects.filter(
+                    company=company, is_deleted=False, is_active=True)
+            elif view == 'in-active':
+                all_employees = Employee.objects.filter(
+                    company=company, is_deleted=True, is_active=False)
+            else:
+                all_employees = Employee.objects.filter(company=company)
+
+        # Handling page number
+        if not page:
+            page = 1
+
+        # Handling search query and search in DB
+        if search_query:
+            search_query = search_query.strip()
+            filtered_records = all_employees.filter(
+                Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query) | Q(
+                    email__icontains=search_query) | Q(designation__icontains=search_query) | Q(phone__icontains=search_query)
+            )
+            filtered_records = filtered_records.filter(company=company)
+
+            all_employees = filtered_records
+        else:
+            all_employees = all_employees
+
+        # Making pagination
+        paginator = Paginator(all_employees, 10)
+        focused_page = paginator.page(page)
+        page = int(page)
+
+        if focused_page.has_next():
+            next = int(page) + 1
+
+        if focused_page.has_previous():
+            previous = int(page) - 1
+
+        # Posting results of pagination
+        all_employees = paginator.get_page(page)
+        all_employees = list(all_employees.object_list)[::-1]
+        page_range = list(paginator.page_range)
+
+    except Exception as e:
+        messages.error(
+            request, "Page with given filter didn't have any records!")
+        return redirect("all-employees")
+
+    # preparing data to send to frontend
     context = {
-        "name": "all-employees"
+        "name": "all-employees",
+        "company": company,
+        "previous": previous,
+        "next": next,
+        "focused_page": None,
+        "num_pages": page_range,
+        "length": len(page_range),
+        "current_page": page,
+        "all_employees": all_employees
     }
-
-    parameter = False
-    if 'deleted' in request.GET and request.GET['deleted']:
-        parameter = request.GET['deleted']
-
-    print(parameter)
-
-    search_query = request.GET.get('query')
-    company = get_company_by_admin(request.user)
-
-    if not parameter:
-        all_employees = Employee.objects.filter(
-            company=company, is_deleted=False)
-    else:
-        all_employees = Employee.objects.filter(
-            company=company, is_deleted=True)
-
-    context['company'] = company
-
-    if search_query:
-        search_query = search_query.strip()
-        filtered_records = Employee.objects.filter(
-            Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query) | Q(
-                email__icontains=search_query) | Q(designation__icontains=search_query) | Q(phone__icontains=search_query)
-        )
-        filtered_records = filtered_records.filter(company=company)
-        # all_employees_list = []
-        # for employee in all_employees:
-        #     if search_query == employee.first_name:
-        #         all_employees_list.append(employee)
-        #     elif search_query == employee.last_name:
-        #         all_employees_list.append(employee)
-        #     elif search_query == employee.email:
-        #         all_employees_list.append(employee)
-        #     elif search_query == employee.designation:
-        #         all_employees_list.append(employee)
-        #     elif search_query == employee.phone:
-        #         all_employees_list.append(employee)
-
-        context['all_employees'] = filtered_records
-    else:
-        context['all_employees'] = all_employees
-
-    context['all_employees'] = list(context['all_employees'])[::-1]
 
     return render(request, "all-employees.html", context)
 
 
-@login_required
+# View function to save employee
+@ login_required
 def save_employee(request):
     if request.method == "POST":
+        # Get form submission
         profile_picture = None
         is_active = False
         telephone = None
@@ -365,6 +376,7 @@ def save_employee(request):
             if telephone:
                 new_employee.telephone = telephone
 
+            # Save
             new_employee.save()
             messages.info(request, "New employee has been registered!")
         else:
@@ -375,15 +387,18 @@ def save_employee(request):
     return redirect("login")
 
 
-@login_required
+# View function to update employee
+@ login_required
 def update_employee(request):
-
     return redirect("login")
 
 
+# View function to render single employee profile
 def single_employee(request, id):
+    # Check if coming request is authenticated
     if request.user.is_authenticated:
         if request.method == "POST":
+            # Update employee form
             if id and len(id) > 0:
                 employee = Employee.objects.filter(id=id)
                 if employee.exists():
@@ -399,12 +414,14 @@ def single_employee(request, id):
                         is_deleted = True
 
                         if 'is_active' in request.POST:
-                            is_active = True
-                            is_deleted = False
+                            employee.activate()
+                        else:
+                            employee.de_activate()
+
                         if 'telephone' in request.POST:
                             employee.telephone = request.POST['telephone']
 
-                        employee.is_active = is_active
+                        # Updating all the details of the database
                         employee.first_name = request.POST['first_name']
                         employee.last_name = request.POST['last_name']
                         employee.email = request.POST['email']
@@ -413,7 +430,6 @@ def single_employee(request, id):
                         employee.birthday = request.POST['birthday']
                         employee.projects = request.POST['projects']
                         employee.specialized_in = request.POST['specialized_in']
-                        employee.is_deleted = is_deleted
                         employee.save()
 
                         messages.info(
@@ -432,28 +448,34 @@ def single_employee(request, id):
         "employee": None,
         "index": 1
     }
+    # Getting requested employee profile
     employee = Employee.objects.filter(id=id)
 
     if employee.exists():
         employee = employee[0]
         context['employee'] = employee
 
+    # Rendering the profile version based on
+    # the authenticated or not authenticated request
     if request.user.is_authenticated:
         return render(request, "profile.html", context)
     else:
         return render(request, "temp-profile.html", context)
 
 
-@login_required
+# View function to edit the company details
+@ login_required
 def edit_company_details(request):
     company = get_company_by_admin(request.user)
     if request.method == "POST":
         try:
+            # Get form submission of the edit company details
             name = request.POST['name']
             tagline = request.POST['tagline']
             description = request.POST['description']
             founded_in = request.POST['founded_in']
             error_message = "Kindly provide valid values for all fields!"
+            # Checking which parameters needs to be changed
             if name:
                 company.name = name
             else:
@@ -471,6 +493,7 @@ def edit_company_details(request):
             else:
                 raise ValueError(error_message)
 
+            # Get template input separately to test
             if 'template_input' in request.POST and request.POST['template_input']:
                 template_id = request.POST['template_input']
                 template_query = CardTemplate.objects.filter(id=template_id)
@@ -486,6 +509,7 @@ def edit_company_details(request):
 
         return redirect("edit-company-details")
 
+    # Data preparation to send to the frontend
     context = {
         "name": "edit-company-details"
     }
@@ -494,6 +518,8 @@ def edit_company_details(request):
     return render(request, "edit-company-details.html", context)
 
 
+# View functions not in use right now
+'''
 def buttons(request):
     return render(request, "buttons.html")
 
@@ -520,6 +546,10 @@ def basictable(request):
 
 def icons(request):
     return render(request, "mdi.html")
+'''
+
+# View function to login the user after
+# Validation
 
 
 def login(request):
@@ -527,6 +557,7 @@ def login(request):
         return redirect("index")
 
     if request.method == "POST":
+        # GET form submission
         email = request.POST['email']
         password = request.POST['password']
         context = {
@@ -535,6 +566,7 @@ def login(request):
         }
         user = auth.authenticate(username=email, password=password)
         if user is not None:
+            # Log the user in, if credentials are correct
             auth.login(request, user)
 
             redirection = request.POST['redirection']
@@ -543,6 +575,7 @@ def login(request):
             else:
                 return redirect("index")
         else:
+            # Through error
             messages.error(request, "Incorrect login details!")
             return render(request, "login.html", context)
             # return redirect("login")
@@ -550,6 +583,8 @@ def login(request):
         return render(request, "login.html")
 
 
+# View functions not in use right now
+'''
 def register(request):
     return render(request, "register.html")
 
@@ -568,3 +603,4 @@ def documentation(request):
 
 def profile(request):
     return render(request, "profile.html")
+'''

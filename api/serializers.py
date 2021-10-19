@@ -5,6 +5,16 @@ from application.models import *
 from django.contrib.auth.models import User
 
 
+'''
+This file contains serializers that is providing
+validation and bring data from database safely
+under the consideration of checking each parameter
+and validate them properly 
+'''
+
+# Serializer for all the APIs related employee Model (table)
+
+
 class EmployeeSerializer(serializers.ModelSerializer):
     is_active = serializers.BooleanField(default=True)
 
@@ -43,6 +53,8 @@ class EmployeeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(errors)
 
         return data
+
+# Serializer for all the APIs related Company  Model (table)
 
 
 class CompanySerializer(serializers.ModelSerializer):

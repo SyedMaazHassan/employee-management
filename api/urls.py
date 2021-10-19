@@ -12,6 +12,7 @@ urlpatterns = [
     path('undelete-employee/', UndeleteEmployeeApi.as_view()),
     path('get-company-info/', GetCompanyApi.as_view()),
     path('update-company-info/', UpdateCompanyApi.as_view()),
+    
 ]
 
 urlpatterns = urlpatterns + \

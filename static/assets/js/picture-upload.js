@@ -56,5 +56,6 @@ function readURL(input, show, big=false) {
         }
     }else{
         alert("Upload only image (in PNG, JPEG, JPG etc)");
+        $("#employee_profile_picture_show").show();
     }
 }

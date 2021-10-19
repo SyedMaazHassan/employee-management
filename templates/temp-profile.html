@@ -19,7 +19,7 @@ Coded by www.creative-tim.com
 
 {% block content %}
 
-
+{% if employee.is_active %}
 
 <div class="row">
   <div class="col-sm-7">
@@ -158,5 +158,14 @@ Coded by www.creative-tim.com
 
 
 </script>
+
+{% else %}
+
+<div class="alert alert-danger text-center" role="alert">
+  Employee doesn't exists!
+</div>
+
+{% endif %}
+
 
 {% endblock content %}

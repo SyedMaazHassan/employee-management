@@ -83,7 +83,18 @@
                 <h3 class="mb-3">All employees</h3>
             </div>
 
-            <div class="col-sm-6 d-flex justify-content-end">
+            <div class="col-sm-6 d-flex justify-content-end align-items-center">
+                <div class="mx-3 pt-2">
+                    <div class="form-group" style="height: 100%;">
+                        <select id="main-filter" class="custom-select py-2" style="border-radius: 15px; height: 40px;" id="exampleSelect">
+                            <option value="all" {% if request.GET.view == 'all' %}selected{% endif %}>All employees</option>
+                            <option value="active" {% if request.GET.view == 'active' %}selected{% endif %}>Active employees</option>
+                            <option value="in-active" {% if request.GET.view == 'in-active' %}selected{% endif %}>In-active employees</option>
+                        </select>
+                    </div>
+                </div>
+
+
                 <button type="button" 
                     id="add-new-employee-btn"
                     onclick="openNav()"
@@ -92,24 +103,7 @@
                     Add new employee
                 </button>
 
-                {% if not request.GET.deleted %}
-                    <button type="button" 
-                        id="add-new-employee-btn"
-                        onclick="openDeletedPage(true)"
-                        class="btn ml-3 d-flex align-items-center btn-outline-danger mb-3">
-                        <i class="material-icons mr-2">delete</i>
-                        See deleted employees
-                    </button>
-
-                {% else %}
-                    <button type="button" 
-                        id="add-new-employee-btn"
-                        onclick="openDeletedPage(false)"
-                        class="btn ml-3 d-flex align-items-center btn-outline-success mb-3">
-                        <i class="material-icons mr-2">delete</i>
-                        See active employees
-                    </button>
-                {% endif %}
+                
             </div>
 
             
@@ -118,6 +112,16 @@
 
         <div class="row">
           <div class="col-12">
+
+            {% for message in messages %}
+                {% if message.level == 40 %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        
+
             <div class="table-responsive" id="myIdCard1">
 
                 <table class="table table-striped display expandable-table">
@@ -128,42 +132,56 @@
                         <th>Email</th>
                         <th>Designation</th>
                         <th>Phone</th>
-                        <th>Status</th>
                         <th>Member since</th>
+                        <th>Action</th>
                         <th></th>
                       </tr>
                     </thead>
                     <tbody>
+
+
+
+               
+
                       {% for employee in all_employees %}
-                      <tr>
-                        <td class="py-1">
-                          <img src="media/{{ employee.profile_picture }}" alt="image" />
-                        </td>
-                        <td>
-                            <a href="{% url 'employee' employee.id %}">
-                                {{ employee.full_name }}
-                            </a>
-                        </td>
-                        <td>{{ employee.email }}</td>
-                        <td>{{ employee.designation }}</td>
-                        <td>{{ employee.phone }}</td>
-                        <td>
-                            {% if employee.is_active %}
-                                <span class="badge badge-success">Active</span>
-                            {% else %}
-                                <span class="badge badge-danger">In-active</span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            {{ employee.member_since }}
-                        </td>
-                        <td>
-                            <i 
-                                class="material-icons mk-pointer"
-                                title="Open id card"
-                                onclick="open_id_card('{{ employee.getJson }}', '{{ forloop.counter }}')">visibility</i>
-                        </td>
-                      </tr>
+
+                        <tr>
+                            <td class="py-1">
+                            <img src="media/{{ employee.profile_picture }}" alt="image" />
+                            </td>
+                            <td>
+                                <a href="{% url 'employee' employee.id %}">
+                                    {{ employee.full_name }}
+                                </a>
+                                <br>
+                                {% if employee.is_active %}
+                                    <span class="badge py-1 mt-2 badge-success">Active</span>
+                                {% else %}
+                                    <span class="badge py-1 mt-2 badge-danger">In-active</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ employee.email }}</td>
+                            <td>{{ employee.designation }}</td>
+                            <td>{{ employee.phone }}</td>
+                            <td>
+                                {{ employee.member_since }}
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <input type="checkbox" 
+                                    class="active-switch" data-id="{{ employee.id }}" 
+                                    {% if employee.is_active %}checked{% endif %}>
+                                    <span class="slider round"></span>
+                                </label>                              
+                            </td>
+                            <td>
+                                <i 
+                                    class="material-icons mk-pointer"
+                                    title="Open id card"
+                                    onclick="open_id_card('{{ employee.getJson }}', '{{ forloop.counter }}')">visibility</i>
+                            </td>
+                        </tr>
+
                       {% endfor %}
 
                       {% if not all_employees %}
@@ -171,7 +189,7 @@
                             <td colspan="8">
                                 <div class="text-center px-3 py-0">
                                     <div class="alert alert-warning" role="alert">
-                                        No employee exists right now, click on "Add new employee".
+                                        No {% if request.GET.view %}{% if request.GET.view != 'all' %}{{ request.GET.view }}{% endif %}{% endif %} employee exists right now, click on "Add new employee".
                                     </div>
                                 </div>
                             </td>
@@ -180,9 +198,31 @@
            
                     </tbody>
                 </table>
-
            
             </div>
+            
+            {% if length > 1 %}
+                <div class="d-flex justify-content-end">
+                    <ul class="pagination mt-4">
+                        {% if previous %}
+                            <li class="page-item"><a class="page-link" href="{% url 'all-employees' %}?page={{ previous }}{% if request.GET.view %}&view={{request.GET.view}}{% endif %}{% if request.GET.query %}&query={{request.GET.query}}{% endif %}">Previous</a></li>
+                        {% endif %}
+                        
+                        {% for num in num_pages %}
+                            <li class="page-item {% if current_page == num %}active{% endif %}">
+                                <a class="page-link" href="{% url 'all-employees' %}?page={{ num }}{% if request.GET.view %}&view={{request.GET.view}}{% endif %}{% if request.GET.query %}&query={{request.GET.query}}{% endif %}">{{ num }}</a>
+                            </li>
+                        {% endfor %}
+
+                        {% if next %}
+                        <li class="page-item"><a class="page-link" href="{% url 'all-employees' %}?page={{ next }}{% if request.GET.view %}&view={{request.GET.view}}{% endif %}{% if request.GET.query %}&query={{request.GET.query}}{% endif %}">Next</a></li>
+                        {% endif %}
+                    </ul>
+
+                
+                </div>
+            {% endif %}
+
           </div>
         </div>
       </div>
@@ -207,6 +247,51 @@
     var selected_employee = null;
    
     let new_parameter = '{{ request.GET.add_employee }}';
+    let search = '{{ request.GET.query }}';
+    let view = '{{ request.GET.view }}';
+    let page = '{{ request.GET.page }}';
+
+
+    $(".active-switch").on("click", function () {
+        let id = $(this).attr("data-id");
+        let is_active = this.checked;
+        if (id) {
+            $.ajax({
+                url: "{% url 'update-employee-status' %}",
+                type: "GET", 
+                data: `id=${id}&is_active=${is_active}`,
+                success: (response)=>{
+                    if (response.status) {
+                        window.location.reload();
+                    }
+                }
+            })
+        }
+    });
+
+
+    $("#search-form-btn").on("click", function () {
+        let query = $("#navbar-search-input").val();
+        if (query) {
+            if (new_parameter || view || page) {
+                window.location.href = window.location.href + `&query=${query}`;
+            }else{
+                window.location.href = "{% url 'all-employees' %}" + `?query=${query}`;                    
+            }
+        }else{
+            window.location.href = "{% url 'all-employees' %}";                   
+        }
+    });
+
+    $("#main-filter").on("change", function () {
+        let value = this.value;
+        if (!(view) && (new_parameter || search || page)) {
+            window.location.href = window.location.href + `&view=${value}`;
+        }else{
+            window.location.href = "{% url 'all-employees' %}?view="+value;
+        }
+    });
+
 
     if (new_parameter == 'true') {
         setTimeout(() => {

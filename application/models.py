@@ -12,11 +12,12 @@ import json
 # python manage.py migrate
 # python manage.py runserver
 
-# MODEL FOR CARD TEMPLATE
 
-
+# MODEL to save the QR code scanned
 class Scan(models.Model):
     my_file = models.ImageField(upload_to="temp_folder")
+
+# MODEL FOR CARD TEMPLATE
 
 
 class CardTemplate(models.Model):
@@ -76,7 +77,19 @@ class Employee(models.Model):
     specialized_in = models.CharField(max_length=255, null=True, blank=True)
     is_deleted = models.BooleanField(default=False)
 
+    def de_activate(self):
+        # Method to deactivate user
+        self.is_active = False
+        self.is_deleted = True
+
+    def activate(self):
+        # Method to activate user
+        print("================")
+        self.is_active = True
+        self.is_deleted = False
+
     def getJson(self):
+        # Method to convert user data into JSON
         data = {
             'phone': f'+{self.phone}',
             'id': str(self.id),
@@ -96,6 +109,7 @@ class Employee(models.Model):
         return json.dumps(data)
 
     def full_name(self):
+        # Method to write full name
         return f'{self.first_name} {self.last_name}'
 
     def __str__(self):
