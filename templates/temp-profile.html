@@ -100,7 +100,7 @@ Coded by www.creative-tim.com
         <div class="col-sm-6 pb-2">
           <div class="d-flex align-items-center mb-3">
             <i class="material-icons" style="font-size: 19px;">event</i>
-            <h5 class="mb-0 ml-2">Born - {{ employee.birthday }}</h5>
+            <h5 class="mb-0 ml-2">Department - {{ employee.department }}</h5>
           </div>
         </div>
 
@@ -153,7 +153,7 @@ Coded by www.creative-tim.com
   let data = '{{ employee.getJson | safe }}';
   let index = "{{ index }}"
   open_id_card(data, index, false);
-  $("#birthday-input").val(selected_employee.birthday);
+  $("#department-input").val(selected_employee.department);
 
 
 

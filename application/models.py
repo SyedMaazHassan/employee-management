@@ -65,7 +65,7 @@ class Employee(models.Model):
     email = models.EmailField(max_length=100)
     designation = models.CharField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=255)
-    birthday = models.DateField()
+    department = models.CharField(max_length=255,null=True, blank=True)
     profile_picture = models.ImageField(
         upload_to="profile_pictures", default="profile_pictures/default-dp.png")
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
@@ -99,7 +99,7 @@ class Employee(models.Model):
             'designation': self.designation,
             'profile_picture': str(self.profile_picture),
             'date_joined': str(self.member_since.date()),
-            'birthday': str(self.birthday),
+            'department': self.department,
             'company': {
                 'id': self.company.id,
                 'name': self.company.name,

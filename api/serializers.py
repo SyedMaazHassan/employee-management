@@ -35,9 +35,9 @@ class EmployeeSerializer(serializers.ModelSerializer):
             if not telephone.replace(" ", "").isdigit():
                 errors['Telephone'] = "Telephone number can't contain alphabets"
 
-        if 'birthday' in data:
-            if data['birthday'].year > 2002:
-                errors['Age'] = "Employee age can't be less than 18 years"
+        # if 'birthday' in data:
+        #     if data['birthday'].year > 2002:
+        #         errors['Age'] = "Employee age can't be less than 18 years"
 
         if 'company' in data and data['company']:
             company = data['company']
@@ -47,7 +47,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
             query = Employee.objects.filter(
                 email=email,  company=company) | Employee.objects.filter(phone=phone, company=company) | Employee.objects.filter(telephone=telephone, company=company)
             if query.count() != 0:
-                errors['unique_constraint'] = "Employee with given email, phone or telephon already exists in this company!"
+                errors['unique_constraint'] = "Employee with given email, phone or telephone already exists in this company!"
 
         if len(errors.keys()) > 0:
             raise serializers.ValidationError(errors)

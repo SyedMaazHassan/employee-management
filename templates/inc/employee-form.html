@@ -44,15 +44,15 @@
 </div>
 
 <div class="form-group mb-3">
-    <label>Telephone <span class="text-danger">*</span></label>
+    <label>Telephone</label>
     <input 
         type="number" 
-        name="telephone"  value="{{ employee.telephone }}"  pattern="[0-9]+"  maxlength="12" class="form-control" placeholder="Telephone" required>
+        name="telephone"  value="{{ employee.telephone }}"  pattern="[0-9]+"  maxlength="12" class="form-control" placeholder="Telephone">
 </div>
 
 <div class="form-group mb-3">
     <label>Activities & projects <span class="text-danger">*</span></label>
-    <input type="text" name="projects"  value="{{ employee.projects }}" class="form-control" placeholder="Activities & projects" required>
+    <textarea type="text" name="projects"  value="{{ employee.projects }}" class="form-control" rows="4" placeholder="Activities & projects" required></textarea>
 </div>
 
 
@@ -60,12 +60,12 @@
 
 <div class="form-group mb-3">
     <label>Specialized in <span class="text-danger">*</span></label>
-    <input type="text" name="specialized_in"  value="{{ employee.specialized_in }}" class="form-control" placeholder="Specialized in" required>
+    <textarea type="text" name="specialized_in"  value="{{ employee.specialized_in }}" class="form-control" rows="4" placeholder="Specialized in" required></textarea>
 </div>
 
 <div class="form-group">
-    <label>Birthday <span class="text-danger">*</span></label>
-    <input type="date" min="1940-01-01" max="2002-01-01" value="{{ employee.birthday }}" id="birthday-input"  name="birthday" class="form-control" required>
+    <label>Department <span class="text-danger">*</span></label>
+    <input type="text" value="{{ employee.department }}" id="department-input"  name="department" class="form-control" placeholder="Department" required>
 </div>
 
 

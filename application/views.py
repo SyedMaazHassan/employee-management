@@ -1,4 +1,4 @@
-from ctypes import BigEndianStructure
+# from ctypes import BigEndianStructure
 from django.shortcuts import get_object_or_404, render, redirect
 from .models import *
 from django.contrib import messages
@@ -8,7 +8,7 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 import os
-from pyzbar import pyzbar
+# from pyzbar import pyzbar
 from PIL import Image
 from django.db.models import Q
 import datetime
@@ -344,7 +344,7 @@ def save_employee(request):
         email = request.POST['email']
         phone = request.POST['phone']
         designation = request.POST['designation']
-        birthday = request.POST['birthday']
+        department = request.POST['department']
         projects = request.POST['projects']
         specialized_in = request.POST['specialized_in']
 
@@ -365,7 +365,7 @@ def save_employee(request):
                 email=email,
                 designation=designation,
                 phone=phone,
-                birthday=birthday,
+                department=department,
                 company=company,
                 is_active=is_active,
                 projects=projects,
@@ -427,7 +427,7 @@ def single_employee(request, id):
                         employee.email = request.POST['email']
                         employee.phone = request.POST['phone']
                         employee.designation = request.POST['designation']
-                        employee.birthday = request.POST['birthday']
+                        employee.department = request.POST['department']
                         employee.projects = request.POST['projects']
                         employee.specialized_in = request.POST['specialized_in']
                         employee.save()

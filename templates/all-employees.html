@@ -132,7 +132,7 @@
                         <th>Email</th>
                         <th>Designation</th>
                         <th>Phone</th>
-                        <th>Member since</th>
+                        <th>Status</th>
                         <th>Action</th>
                         <th></th>
                       </tr>
@@ -154,17 +154,18 @@
                                     {{ employee.full_name }}
                                 </a>
                                 <br>
-                                {% if employee.is_active %}
-                                    <span class="badge py-1 mt-2 badge-success">Active</span>
-                                {% else %}
-                                    <span class="badge py-1 mt-2 badge-danger">In-active</span>
-                                {% endif %}
+                                
                             </td>
                             <td>{{ employee.email }}</td>
                             <td>{{ employee.designation }}</td>
                             <td>{{ employee.phone }}</td>
                             <td>
-                                {{ employee.member_since }}
+                                {% comment %} {{ employee.member_since }} {% endcomment %}
+                                {% if employee.is_active %}
+                                    <span class="badge py-1 mt-2 badge-success">Active</span>
+                                {% else %}
+                                    <span class="badge py-1 mt-2 badge-danger">In-active</span>
+                                {% endif %}
                             </td>
                             <td>
                                 <label class="switch">
