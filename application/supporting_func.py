@@ -53,7 +53,7 @@ def get_company_by_admin(user_object):
         company = Company.objects.get(company_admin=company_admin)
         return company
     except:
-        return redirect("logout")
+        return None
 
 
 def read_qr(image):

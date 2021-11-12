@@ -247,66 +247,66 @@ def upload_qr_code(request):
 @login_required
 def all_employees(request):
     all_employees = []
-    try:
-        # Get company by admin
-        company = get_company_by_admin(request.user)
-        previous = next = None
-        view = request.GET.get('view')
-        search_query = request.GET.get('query')
-        page = request.GET.get('page')
+    # try:
+    # Get company by admin
+    company = get_company_by_admin(request.user)
+    previous = next = None
+    view = request.GET.get('view')
+    search_query = request.GET.get('query')
+    page = request.GET.get('page')
 
-        # Handling which type of employees should be shown
-        if not view:
+    # Handling which type of employees should be shown
+    if not view:
+        all_employees = Employee.objects.filter(company=company)
+    else:
+        if view == 'all':
             all_employees = Employee.objects.filter(company=company)
+        elif view == 'active':
+            all_employees = Employee.objects.filter(
+                company=company, is_deleted=False, is_active=True)
+        elif view == 'in-active':
+            all_employees = Employee.objects.filter(
+                company=company, is_deleted=True, is_active=False)
         else:
-            if view == 'all':
-                all_employees = Employee.objects.filter(company=company)
-            elif view == 'active':
-                all_employees = Employee.objects.filter(
-                    company=company, is_deleted=False, is_active=True)
-            elif view == 'in-active':
-                all_employees = Employee.objects.filter(
-                    company=company, is_deleted=True, is_active=False)
-            else:
-                all_employees = Employee.objects.filter(company=company)
+            all_employees = Employee.objects.filter(company=company)
 
-        # Handling page number
-        if not page:
-            page = 1
+    # Handling page number
+    if not page:
+        page = 1
 
-        # Handling search query and search in DB
-        if search_query:
-            search_query = search_query.strip()
-            filtered_records = all_employees.filter(
-                Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query) | Q(
-                    email__icontains=search_query) | Q(designation__icontains=search_query) | Q(phone__icontains=search_query)
-            )
-            filtered_records = filtered_records.filter(company=company)
+    # Handling search query and search in DB
+    if search_query:
+        search_query = search_query.strip()
+        filtered_records = all_employees.filter(
+            Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query) | Q(
+                email__icontains=search_query) | Q(designation__icontains=search_query) | Q(phone__icontains=search_query)
+        )
+        filtered_records = filtered_records.filter(company=company)
 
-            all_employees = filtered_records
-        else:
-            all_employees = all_employees
+        all_employees = filtered_records
+    else:
+        all_employees = all_employees
 
-        # Making pagination
-        paginator = Paginator(all_employees, 10)
-        focused_page = paginator.page(page)
-        page = int(page)
+    # Making pagination
+    paginator = Paginator(all_employees, 10)
+    focused_page = paginator.page(page)
+    page = int(page)
 
-        if focused_page.has_next():
-            next = int(page) + 1
+    if focused_page.has_next():
+        next = int(page) + 1
 
-        if focused_page.has_previous():
-            previous = int(page) - 1
+    if focused_page.has_previous():
+        previous = int(page) - 1
 
-        # Posting results of pagination
-        all_employees = paginator.get_page(page)
-        all_employees = list(all_employees.object_list)[::-1]
-        page_range = list(paginator.page_range)
+    # Posting results of pagination
+    all_employees = paginator.get_page(page)
+    all_employees = list(all_employees.object_list)[::-1]
+    page_range = list(paginator.page_range)
 
-    except Exception as e:
-        messages.error(
-            request, "Page with given filter didn't have any records!")
-        return redirect("all-employees")
+    # except Exception as e:
+    #     messages.error(
+    #         request, "Page with given filter didn't have any records!")
+    #     return redirect("all-employees")
 
     # preparing data to send to frontend
     context = {

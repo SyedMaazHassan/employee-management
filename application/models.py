@@ -48,6 +48,7 @@ class Company(models.Model):
     tagline = models.CharField(
         max_length=255, default="A place where a character builts.")
     description = models.TextField(max_length=255)
+    logo = models.ImageField(upload_to = "logos", blank = True, null = True)
     founded_in = models.IntegerField()
     card_template = models.ForeignKey(CardTemplate, on_delete=models.CASCADE)
     company_admin = models.ForeignKey(CompanyAdmin, on_delete=models.CASCADE)
@@ -103,6 +104,7 @@ class Employee(models.Model):
             'company': {
                 'id': self.company.id,
                 'name': self.company.name,
+                'logo': str(self.company.logo),
                 'tagline': self.company.tagline
             },
         }

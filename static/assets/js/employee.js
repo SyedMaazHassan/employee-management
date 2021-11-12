@@ -52,14 +52,15 @@ function open_id_card(data, counter, modal=true) {
 
     selected_employee = employee;
 
+   
     $("#company-name").text(employee.company.name);
     $("#company-tagline").text(employee.company.tagline);
-    $("#employee-picture").attr("src", `media/${employee.profile_picture}`);
+    $("#employee-picture").attr("src", `media/${employee.company.logo}`);
     $("#employee-show-id").text(`C${employee.company.id}E${counter}`);
     $("#employee-name").text(employee.name);
     $("#employee-email").text(employee.email);
     $("#employee-designation").text(employee.designation);
-
+    $("#employee-department").text(employee.department);
     $("#employee-phone").text(employee.phone);
     $("#employee-date-joined").text(employee.date_joined);
     
