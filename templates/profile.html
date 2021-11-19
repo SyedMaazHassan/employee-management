@@ -13,15 +13,413 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 -->
 
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <!-- <link rel="stylesheet" href="./style.css"> -->
+  <script src="https://kit.fontawesome.com/1404646b17.js" crossorigin="anonymous"></script>
+
+  <style>
+    .blueParentColumn {
+      border-radius: 100px;
+      border: 2px solid #557ec7;
+      background-color: #d9d9d9;
+    }
+
+    .firstCard {
+      border-radius: 29px;
+      border: 3px solid #a5a5a5;
+    }
+
+    .profileDiv {
+      height: 100px;
+      border-radius: 50%;
+      /*border: 3px solid #a5a5a5;*/
+      width: 100px;
+
+    }
+    .companyName{
+        text-align: center;
+    font-size: 25px;
+    font-weight: 900;
+    }
+
+    /* fontSizes Start */
+
+    .fontSize12px {
+      font-size: 12px !important;
+    }
+
+    .fontSize11px {
+      font-size: 11px !important;
+    }
+
+    .fontSize13px {
+      font-size: 13px !important;
+    }
+
+    .fontSize9px {
+      font-size: 9px !important;
+    }
+
+    /* fontSizes End */
+
+    /* lineHeght Start */
+
+    .lineHeight12px {
+      line-height: 12px !important;
+    }
+
+    .lineHeight32px {
+      line-height: 32px !important;
+    }
+
+    .lineHeight26px {
+      line-height: 26px !important;
+    }
+
+    .lineHeight23px {
+      line-height: 23px !important;
+    }
+
+    /* lineHeight End */
+
+    .font-weight-500 {
+      font-weight: 500 !important;
+    }
+
+    .borderRadius18px {
+      border-radius: 18px !important;
+    }
+
+    .bgWhite {
+      background-color: white !important;
+    }
+
+    .bgF2 {
+      background-color: #f2f2f2;
+    }
+
+    .kuwaitLogo {
+      width: 300px;
+    }
+
+    .iconImages {
+      height: 26px !important;
+    }
+
+    /* media query */
+    @media screen and (max-width: 634px) {
+      .blueParentColumn {
+        padding: 0px 31px 26px 31px !important;
+        border-radius: 50px;
+      }
+
+      .kuwaitLogo {
+        width: 200px;
+      }
+
+      .fontSize12px {
+        font-size: 8px !important;
+      }
+
+      .fontSize11px {
+        font-size: 7px !important;
+      }
+
+      .fontSize13px {
+        font-size: 9px !important;
+      }
+
+      .fontSize9px {
+        font-size: 6px !important;
+      }
+
+      .lineHeight32px {
+        line-height: 19px !important;
+      }
+
+      .lineHeight26px {
+        line-height: 14px !important;
+      }
+
+      .lineHeight23px {
+        line-height: 15px !important;
+      }
+
+      .justify-content-xs-center {
+        display: flex;
+        justify-content: center;
+      }
+
+      .profileDiv {
+        height: 70px;
+        border-radius: 50%;
+        /*border: 3px solid #a5a5a5;*/
+        width: 70px;
+        padding: 0px !important;
+
+
+      }
+          .companyName{
+        text-align: center;
+    font-size: 17px;
+    font-weight: 900;
+    }
+    .phoneFontSize{
+            font-size: 11px !important;
+
+    }
+
+    }
+
+    .circle {
+      margin: 0px !important
+    }
+  </style>
+
 
 {% extends 'inc/main_base.html' %}
 {% load static %}
 
 {% block content %}
 
+{% if error and not employee %}
+
+  <div class="alert alert-danger" role="alert">
+    {{ error }}
+  </div>
+
+{% else %}
+
+<div class="container pb-3 pl-5 pr-5">
+    <div class="row d-flex justify-content-center">
+      <div class="col-md-8 col-lg-6   blueParentColumn mt-3 pb-3">
+
+        <!-- first Div start -->
+        <div class="row d-flex justify-content-center ">
+          <div class="col-sm-11 a mt-5 firstCard bgWhite">
+            <div class="d-flex justify-content-center align-items-center flex-column mt-2">
+              
+              <img  class="kuwaitLogo" src="media/{{ employee.company.logo }}" style="width: 80px;" alt="">
+
+            </div>
+
+            <div class="text-left" style="text-align: left;">
+              <p class="companyName mt-3">{{ employee.company.name }}</p>
+              <p class="fontSize11px font-weight-500 text-center">{{ employee.company.tagline }}</p>
+
+              <div class="card text-left border radius-10 mb-3 google-shadow">
+                <div class="card-body fontSize11px p-3">
+                  {{ employee.company.description }}
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+        <!-- first Div End -->
+        <!-- second Div start -->
+
+        <div class="row d-flex justify-content-center">
+          <div class="col-sm-11 a mt-2 firstCard bgF2">
+            <div class="d-flex align-items-center  p-0">
 
 
-<div id="mySidenav" class="sidenav">
+              <div class="  d-flex justify-content-center align-items-center flex-column p-0">
+
+                <span class="profileDiv py-1">
+                    <img class="w-100 h-100 " style=" border-radius:50%; z-index: -1;" src="media/{{ employee.profile_picture }}"
+            class="profile-picture-icon" alt="...">
+                  <!--<p class="fontSize9px font-weight-bold text-center mt-sm-3 mt-1">Employee <br />-->
+                  <!--  Photo-->
+                  <!--</p>-->
+                  <!--<p class="fontSize9px font-weight-bold text-center"> Optional Field</p>-->
+                </span>
+              </div>
+              <div style="width: 50%;" class="d-flex  justify-content-center">
+                <div class=" fontSize12px font-weight-500 px-1 ">
+                  <p class="fontSize12px lineHeight26px circle text-center">BOARD MEMBER
+                  </p>
+                  <p class="fontSize12px font-weight-bold circle lineHeight26px text-center">{{ employee.full_name }}
+                  </p>
+                  <p class="fontSize12px font-weight-500 circle lineHeight26px text-center">{{ employee.designation }}
+                  </p>
+
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+        <!-- Second Div End -->
+        <!-- third Div start -->
+
+        <div class="row d-flex justify-content-center">
+          <div class="col-sm-11 a mt-2 firstCard p-3 pl-3 bgWhite">
+            <div class="row pl-3">
+              <!--<img class="iconImages" src="./assets/contact.png" alt="">-->
+              <i class="material-icons iconImages" style="font-size: 19px;">wifi_calling_3</i>
+
+              <p class="fontSize13px font-weight-bold pl-2 lineHeight26px ">CONTACT INFO.
+              </p>
+            </div>
+
+            <div class="row pl-4">
+
+
+              <table class="fontSize12px font-weight-500 lineHeight32px">
+                <tr>
+                    
+                  <td><i class="fa fa-mobile" aria-hidden="true"></i>
+                  </td>
+                  <td class="pl-3">Mobile:</td>
+                  <td class="pl-3">{{ employee.phone }}</td>
+                </tr>
+                <tr>
+                  <!--<td><i class="fa fa-volume-control-phone" aria-hidden="true"></i>-->
+
+                  <!--</td>-->
+                  <td>         <i class="material-icons iconImages mt-1 pt-1 phoneFontSize"  style="font-size: 14px;">wifi_calling_3</i></td>
+                  <td class="pl-3">Phone:</td>
+                  <td class="pl-3">{{ employee.telephone }}</td>
+                </tr>
+                <tr>
+                  <td><i class="fa fa-envelope" aria-hidden="true"></i>
+                  </td>
+                  <td class="pl-3">Email:</td>
+                  <td class="pl-3">{{ employee.email }}</td>
+                </tr>
+              </table>
+
+            </div>
+
+
+          </div>
+
+        </div>
+        <!--Third  Div End -->
+
+  
+
+        <!--5 Div start -->
+
+            <div class="row d-flex justify-content-center">
+              <div class="col-sm-11 a mt-2 firstCard p-3 bgF2">
+                <div class="row fontSize13px font-weight-bold pl-2">
+                  <!--<img class="iconImages" src="./assets/roles.png" alt="">-->
+                  <i class="material-icons text-primary" style="font-size: 19px;">engineering</i>
+                  <p class="pl-2" style="line-height: 30px;">ACTIVITIES & PROJECTS</p>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12  pb-4 ">
+                    <div class="row">
+                      {% for project in employee.get_projects %}
+                        {% if project %}
+                          <div class="col-sm-6 py-0 my-0">
+                            <ul  class="my-0 fontSize12px font-weight-500 lineHeight23px">
+                              <li>{{ project }}</li>
+                            </ul>
+                          </div>
+                        {% endif %}
+                      {% endfor %}
+
+                     
+                    </div>
+                 
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+            <!-- 5 Div end -->
+
+              <!-- 4 Div start -->
+              <div class="row d-flex justify-content-center">
+                <div class="col-sm-11 a mt-2 firstCard p-3 bgWhite">
+                  <div class="row ">
+                    <!--<img class="pl-2 iconImages " src="./assets/responsibiites.png" alt="">-->
+                       <i class="material-icons pl-2 text-primary " style="font-size: 19px;">workspace_premium</i>
+                    <div>
+                      <p class="fontSize13px font-weight-bold pl-2  lineHeight26px  ">SPECIALIZED IN</p>
+      
+                    </div>
+      
+                  </div>
+                  <div class="row ">
+      
+                    {% for speciality in employee.get_specialization %}
+                      {% if speciality %}
+                        <div class="col-sm-12 py-0 my-0">
+                          <ul class="my-0">
+                            <li>{{ speciality }}</li>
+                          </ul>
+                        </div>
+                      {% endif %}
+                    {% endfor %}
+      
+                  </div>
+      
+                </div>
+      
+              </div>
+              <!-- 4 Div End-->
+
+        
+
+              <div class="row d-flex justify-content-center">
+                <div class="col-sm-9  mt-2 borderRadius18px firstCard pt-2 bgF2">
+                  <div class="row d-flex justify-content-center">
+                    <p style="text-decoration: underline;" class="text-center fontSize12px font-weight-500"><a
+                        href="{{ employee.company.link }}">{{ employee.company.link }}</a></p>
+                  </div>
+                  <div class="row d-flex justify-content-center">
+                    <p class="text-center fontSize12px font-weight-500 lineHeight26px">{{ employee.company.address }} | +{{ employee.company.contact_no }} 
+                    </p>
+
+                    {% if user.is_authenticated and user.username == employee.company.company_admin.user.username %}
+
+                      <button type="button" id="add-new-employee-btn" onclick="openNav()"
+                      class="btn d-flex align-items-center btn-primary mb-3">
+                      <i class="material-icons mr-2">edit</i>
+                      Update employee info
+                    </button>
+
+                    {% endif %}
+                  </div>
+      
+      
+                </div>
+
+                <div class="col-sm-12 text-center">
+                 
+                </div>
+      
+              </div>
+
+      </div>
+
+      <div class="text-center">
+        
+
+      </div>
+   
+        <!-- 6 Div start -->
+      
+        <!-- 6 Div end -->
+      </div>
+    </div>
+  </div>
+
+<!--oldcode-->
+{% if user.is_authenticated and user.username == employee.company.company_admin.user.username %}
+
+<div   id="mySidenav" class="sidenav">
   <div class="p-4">
     <div class="row">
       <div class="col-sm-7 d-flex align-items-center">
@@ -67,202 +465,202 @@ Coded by www.creative-tim.com
 
 </div>
 
+{% endif %}
 
-<div class="text-center mt-3 mb-5">
-  <div class="row">
-    <div class="col-sm-4"></div>
-    <div class="col-sm-4">
-      
-      <div class="row">
-        <div class="col-sm-4 col-4">
-          <img src="media/{{ employee.company.logo }}" style="width: 80px;" alt="">
-        </div>
+{% endif %}
 
-        <div class="col-sm-8 col-8 text-left pl-0 d-flex align-items-center">
-          <div>
-            <h2>{{ employee.company.name }}</h2>
 
-            <h5 class="text-secondary">{{ employee.company.tagline }}</h5>
-          </div>
+<!--<div  class="text-center mt-3 mb-5">-->
+<!--  <div class="row">-->
+<!--    <div class="col-sm-4"></div>-->
+<!--    <div class="col-sm-4">-->
+
+<!--      <div class="row">-->
+<!--        <div class="col-sm-4 col-4">-->
           
+<!--        </div>-->
 
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-4"></div>
+<!--        <div class="col-sm-8 col-8 text-left pl-0 d-flex align-items-center">-->
+<!--          <div>-->
+<!--            <h2></h2>-->
 
-  </div>
-
-</div>
-
+<!--            <h5 class="text-secondary"></h5>-->
+<!--          </div>-->
 
 
-<div class="row mt-4 px-4">
-  <div class="col-sm-3">
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="col-sm-4"></div>-->
 
-    <div class="card mt-0">
-      <div class="card-header d-flex justify-content-center bg-primary text-white" style="border-top-left-radius: 20px;border-top-right-radius: 20px;">Profile</div>
-      
-      <div class="mt-4">
-        <div class="text-center">
-          <img style="width: 100px; height: 100px;border: 4px solid #fff;" src="media/{{ employee.profile_picture }}"
-            class="profile-picture-icon" alt="...">
+<!--  </div>-->
+
+<!--</div>-->
 
 
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-12 pb-4">
-          <div class="text-center text-white d-flex flex-column justify-content-center align-items-center">
-            <h3 class="my-2  text-dark"><b>{{ employee.full_name }}</b></h3>
-            <div class="d-flex align-items-center justify-content-center">
-              <div class="d-flex align-items-center mb-0 ml-2">
-                {% if employee.is_active %}
-                <span class="badge badge-success">Active</span>
-                {% else %}
-                <span class="badge badge-danger">In-active</span>
-                {% endif %}
-              </div>
-            </div>
-          </div>
-          <hr class="mx-5">
-          <div class="d-flex justify-content-center align-items-center text-white mb-3 text-dark">
-            <i class="material-icons" style="font-size: 19px;">work</i>
-            <h5 class="mb-0 ml-2">{{ employee.designation }}</h5>
-          </div>
-          <div class="text-center d-flex pb-0 mt-4 justify-content-center">
-            <button type="button" id="add-new-employee-btn" onclick="openNav()"
-              class="btn d-flex align-items-center btn-outline-dark mb-0">
-              <i class="material-icons mr-2">edit</i>
-              Update employee info
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="card text-dark" style="border-radius: 0px 0px 10x 20px;">
-      
-    </div>
-  </div>
 
-  <div class="col-sm-4">
-   
+<!--<div class="row mt-4 px-4">-->
+<!--  <div class="col-sm-3">-->
+
+<!--    <div class="card mt-0">-->
+      <!--<div class="card-header d-flex justify-content-center bg-primary text-white" style="border-top-left-radius: 20px;border-top-right-radius: 20px;">Profile</div>-->
+
+      <!--<div class="mt-4">-->
+      <!--  <div class="text-center">-->
+      <!--    <img style="width: 100px; height: 100px;border: 4px solid #fff;" src="media/{{ employee.profile_picture }}"-->
+      <!--      class="profile-picture-icon" alt="...">-->
 
 
-      <div class="card mt-0">
-        <div class="card-header d-flex justify-content-center bg-primary text-white" style="border-top-left-radius: 20px;border-top-right-radius: 20px;">More Info</div>
-        <div class="row mt-4 px-4">
-          <div class="col-sm-12 pb-3">
-            <div class="card border p-3">
-              <div class="">
-                <div class="d-flex align-items-center mb-3 text-primary">
-                  <i class="material-icons" style="font-size: 19px;">workspace_premium</i>
-                  <h6 class="my-0 ml-2">Specialized in</h6>
-                </div>
-                <h5 class="mb-0 ml-2">{{ employee.specialized_in | safe }}</h5>
-              </div>
-            </div>
-          </div>
+      <!--  </div>-->
+      <!--</div>-->
+      <!--<div class="row">-->
+      <!--  <div class="col-sm-12 pb-4">-->
+      <!--    <div class="text-center text-white d-flex flex-column justify-content-center align-items-center">-->
+      <!--      <h3 class="my-2  text-dark"><b></b></h3>-->
+      <!--      <div class="d-flex align-items-center justify-content-center">-->
+      <!--        <div class="d-flex align-items-center mb-0 ml-2">-->
+      <!--          {% if employee.is_active %}-->
+      <!--          <span class="badge badge-success">Active</span>-->
+      <!--          {% else %}-->
+      <!--          <span class="badge badge-danger">In-active</span>-->
+      <!--          {% endif %}-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <!--    </div>-->
+      <!--    <hr class="mx-5">-->
+      <!--    <div class="d-flex justify-content-center align-items-center text-white mb-3 text-dark">-->
+      <!--      <i class="material-icons" style="font-size: 19px;">work</i>-->
+      <!--      <h5 class="mb-0 ml-2">{{ employee.designation }}</h5>-->
+      <!--    </div>-->
+      <!--    <div class="text-center d-flex pb-0 mt-4 justify-content-center">-->
+         
+      <!--    </div>-->
+      <!--  </div>-->
+      <!--</div>-->
+  <!--  </div>-->
+  <!--  <div class="card text-dark" style="border-radius: 0px 0px 10x 20px;">-->
+
+  <!--  </div>-->
+  <!--</div>-->
+
+  <!--<div class="col-sm-4">-->
 
 
-          <div class="col-sm-12 pb-3">
-            <div class="card border p-3">
-              <div class="">
-                <div class="d-flex align-items-center mb-3 text-primary">
-                  <i class="material-icons" style="font-size: 19px;">engineering</i>
-                  <h6 class="my-0 ml-2">Projects</h6>
-                </div>
-                <h5 class="mb-0 ml-2">{{ employee.projects | safe }}</h5>
-              </div>
-            </div>
-          </div>
 
-          <div class="col-sm-12 pb-3">
-            <div class="card border p-3">
-              <div class="">
-                <div class="d-flex align-items-center mb-3 text-primary">
-                  <i class="material-icons" style="font-size: 19px;">event</i>
-                  <h6 class="my-0 ml-2">Department</h6>
-                </div>
-                <h5 class="mb-0 ml-2">{{ employee.department }}</h5>
-              </div>
-            </div>
-          </div>
+  <!--    <div class="card mt-0">-->
+  <!--      <div class="card-header d-flex justify-content-center bg-primary text-white" style="border-top-left-radius: 20px;border-top-right-radius: 20px;">More Info</div>-->
+  <!--      <div class="row mt-4 px-4">-->
+  <!--        <div class="col-sm-12 pb-3">-->
+  <!--          <div class="card border p-3">-->
+  <!--            <div class="">-->
+  <!--              <div class="d-flex align-items-center mb-3 text-primary">-->
+  <!--                <i class="material-icons text-primary" style="font-size: 19px;">workspace_premium</i>-->
+  <!--                <h6 class="my-0 ml-2">Specialized in</h6>-->
+  <!--              </div>-->
+  <!--              <h5 class="mb-0 ml-2">{{ employee.specialized_in | safe }}</h5>-->
+  <!--            </div>-->
+  <!--          </div>-->
+  <!--        </div>-->
 
 
-          <div class="col-sm-12 pb-3">
-            <div class="card border p-3">
-              <div class="">
-                <div class="d-flex align-items-center mb-3 text-primary">
-                  <i class="material-icons" style="font-size: 19px;">history</i>
-                  <h6 class="my-0 ml-2">Joined</h6>
-                </div>
-                <h5 class="mb-0 ml-2">{{ employee.member_since.date }}</h5>
-              </div>
-            </div>
-          </div>
+  <!--        <div class="col-sm-12 pb-3">-->
+  <!--          <div class="card border p-3">-->
+  <!--            <div class="">-->
+  <!--              <div class="d-flex align-items-center mb-3 text-primary">-->
+  <!--                <i class="material-icons" style="font-size: 19px;">engineering</i>-->
+  <!--                <h6 class="my-0 ml-2">Projects</h6>-->
+  <!--              </div>-->
+  <!--              <h5 class="mb-0 ml-2">{{ employee.projects | safe }}</h5>-->
+  <!--            </div>-->
+  <!--          </div>-->
+  <!--        </div>-->
 
-        </div>
-      </div>
+  <!--        <div class="col-sm-12 pb-3">-->
+  <!--          <div class="card border p-3">-->
+  <!--            <div class="">-->
+  <!--              <div class="d-flex align-items-center mb-3 text-primary">-->
+  <!--                <i class="material-icons" style="font-size: 19px;">event</i>-->
+  <!--                <h6 class="my-0 ml-2">Department</h6>-->
+  <!--              </div>-->
+  <!--              <h5 class="mb-0 ml-2">{{ employee.department }}</h5>-->
+  <!--            </div>-->
+  <!--          </div>-->
+  <!--        </div>-->
 
 
-  </div>
+  <!--        <div class="col-sm-12 pb-3">-->
+  <!--          <div class="card border p-3">-->
+  <!--            <div class="">-->
+  <!--              <div class="d-flex align-items-center mb-3 text-primary">-->
+  <!--                <i class="material-icons" style="font-size: 19px;">history</i>-->
+  <!--                <h6 class="my-0 ml-2">Joined</h6>-->
+  <!--              </div>-->
+  <!--              <h5 class="mb-0 ml-2">{{ employee.member_since.date }}</h5>-->
+  <!--            </div>-->
+  <!--          </div>-->
+  <!--        </div>-->
 
-  <div class="col-sm-5">
-    <div class="">
+  <!--      </div>-->
+  <!--    </div>-->
+
+
+  <!--</div>-->
+
+  <!--<div class="col-sm-5">-->
+    <!--<div class="">-->
       <!-- <h4 class="mb-0 mt-3 ml-3">ID card</h4> -->
-      <div class="bg-white border-10">
-        {% include employee.company.card_template.full_path %}
-        <div class="text-center d-flex pb-0 justify-content-center">
-          <button type="button" id="download_btn" class="btn d-flex align-items-center btn-outline-primary mb-3">
-            <i class="material-icons mr-2">download</i>
-            Download to print
-          </button>
-        </div>
-      </div>
+    <!--  <div class="bg-white border-10">-->
+    <!--    {% include employee.company.card_template.full_path %}-->
+    <!--    <div class="text-center d-flex pb-0 justify-content-center">-->
+    <!--      <button type="button" id="download_btn" class="btn d-flex align-items-center btn-outline-primary mb-3">-->
+    <!--        <i class="material-icons mr-2">download</i>-->
+    <!--        Download to print-->
+    <!--      </button>-->
+    <!--    </div>-->
+    <!--  </div>-->
 
-    </div>
+    <!--</div>-->
 
-    <div class="card mt-4">
+  <!--  <div class="card mt-4">-->
       <!--tips: add .text-center,.text-right to the .card to change card text alignment-->
 
-      <div class="card-header d-flex justify-content-center bg-primary text-white" style="border-top-left-radius: 20px;border-top-right-radius: 20px;">Contact</div>
-      <div class="row mt-4 px-4">
+  <!--    <div class="card-header d-flex justify-content-center bg-primary text-white" style="border-top-left-radius: 20px;border-top-right-radius: 20px;">Contact</div>-->
+  <!--    <div class="row mt-4 px-4">-->
 
-        <div class="col-sm-12 pb-2">
-          <div class="d-flex align-items-center mb-3">
-            <i class="material-icons" style="font-size: 19px;">email</i>
-            <h4 class="mb-0 ml-2">{{ employee.email }}</h4>
-          </div>
-        </div>
+  <!--      <div class="col-sm-12 pb-2">-->
+  <!--        <div class="d-flex align-items-center mb-3">-->
+  <!--          <i class="material-icons" style="font-size: 19px;">email</i>-->
+  <!--          <h4 class="mb-0 ml-2">{{ employee.email }}</h4>-->
+  <!--        </div>-->
+  <!--      </div>-->
 
-        <div class="col-sm-12 pb-2">
-          <div class="d-flex align-items-center mb-3">
-            <i class="material-icons" style="font-size: 19px;">phone_iphone</i>
-            <h5 class="mb-0 ml-2">+{{ employee.phone }}</h5>
-          </div>
-        </div>
+  <!--      <div class="col-sm-12 pb-2">-->
+  <!--        <div class="d-flex align-items-center mb-3">-->
+  <!--          <i class="material-icons" style="font-size: 19px;">phone_iphone</i>-->
+  <!--          <h5 class="mb-0 ml-2">+{{ employee.phone }}</h5>-->
+  <!--        </div>-->
+  <!--      </div>-->
 
-        <div class="col-sm-12 pb-2">
-          <div class="d-flex align-items-center mb-3">
-            <i class="material-icons" style="font-size: 19px;">wifi_calling_3</i>
-            <h5 class="mb-0 ml-2">{{ employee.telephone }}</h5>
-          </div>
-        </div>
+  <!--      <div class="col-sm-12 pb-2">-->
+  <!--        <div class="d-flex align-items-center mb-3">-->
+  <!--          <i class="material-icons" style="font-size: 19px;">wifi_calling_3</i>-->
+  <!--          <h5 class="mb-0 ml-2">{{ employee.telephone }}</h5>-->
+  <!--        </div>-->
+  <!--      </div>-->
 
-        <div class="col-sm-12 pb-2">
-          <div class="d-flex align-items-center mb-3">
-            <i class="material-icons" style="font-size: 19px;">business</i>
-            <h5 class="mb-0 ml-2">{{ employee.company.name }}</h5>
-          </div>
-        </div>
+  <!--      <div class="col-sm-12 pb-2">-->
+  <!--        <div class="d-flex align-items-center mb-3">-->
+  <!--          <i class="material-icons" style="font-size: 19px;">business</i>-->
+  <!--          <h5 class="mb-0 ml-2">{{ employee.company.name }}</h5>-->
+  <!--        </div>-->
+  <!--      </div>-->
 
-      </div>
+  <!--    </div>-->
 
       <!-- <hr class="text-white bg-white" style="opacity: 0;"> -->
 
-    </div>
-  </div>
+  <!--  </div>-->
+  <!--</div>-->
 </div>
 
 <!-- <div class="row mt-4 px-4">

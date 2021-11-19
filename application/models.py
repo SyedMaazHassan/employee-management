@@ -8,18 +8,19 @@ from django.db.models.fields import UUIDField
 from django.utils import timezone
 import json
 
+
 # python manage.py makemigrations
 # python manage.py migrate
 # python manage.py runserver
+
 
 
 # MODEL to save the QR code scanned
 class Scan(models.Model):
     my_file = models.ImageField(upload_to="temp_folder")
 
+
 # MODEL FOR CARD TEMPLATE
-
-
 class CardTemplate(models.Model):
     name = models.CharField(max_length=255)
     html_file_name = models.CharField(max_length=255)
@@ -30,9 +31,8 @@ class CardTemplate(models.Model):
     def __str__(self):
         return f'{self.name} - {self.html_file_name}'
 
+
 # MODEL FOR COMPANY ADMIN
-
-
 class CompanyAdmin(models.Model):
     user = models.ForeignKey(User, on_delete=CASCADE)
 
@@ -46,10 +46,15 @@ class CompanyAdmin(models.Model):
 class Company(models.Model):
     name = models.CharField(max_length=255)
     tagline = models.CharField(
-        max_length=255, default="A place where a character builts.")
+        max_length=255, 
+        default="A place where a character builts."
+        )
     description = models.TextField(max_length=255)
     logo = models.ImageField(upload_to = "logos", blank = True, null = True)
     founded_in = models.IntegerField()
+    link = models.URLField(null = True, blank = True)
+    address = models.CharField(max_length = 255, null = True, blank = True)
+    contact_no = models.IntegerField(null = True, blank = True)
     card_template = models.ForeignKey(CardTemplate, on_delete=models.CASCADE)
     company_admin = models.ForeignKey(CompanyAdmin, on_delete=models.CASCADE)
 
@@ -75,8 +80,19 @@ class Employee(models.Model):
     telephone = models.CharField(
         max_length=13, null=True, blank=True)
     projects = models.TextField(null=True, blank=True)
-    specialized_in = models.CharField(max_length=255, null=True, blank=True)
+    specialized_in = models.TextField(null=True, blank=True)
     is_deleted = models.BooleanField(default=False)
+
+    def get_projects(self):
+        if self.projects:
+            return self.projects.split("\n")
+        return None
+
+    def get_specialization(self):
+        if self.specialized_in:
+            return self.specialized_in.split("\n")
+            
+        return None
 
     def de_activate(self):
         # Method to deactivate user

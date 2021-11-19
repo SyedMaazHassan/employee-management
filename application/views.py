@@ -19,6 +19,9 @@ from .supporting_func import *
 # View function to update the user status of Activate/De-activate
 @login_required
 def update_employee_status(request):
+    if request.user.is_superuser:
+        return redirect("index")
+    
     output = {
         'status': False,
         'message': None
@@ -50,6 +53,9 @@ def update_employee_status(request):
 # View function to change password
 @login_required
 def change_password(request):
+    if request.user.is_superuser:
+        return redirect("index")
+
     context = {
         "name": "change-password",
         "error": None
@@ -102,6 +108,9 @@ def change_password(request):
 
 # View function to check email
 def check_user_email(request):
+
+
+    
     '''Check user email, weather user email exists in our record
        or not and give proper output'''
     output = {
@@ -135,6 +144,10 @@ def logout(request):
 # View function for rendering the dashboard
 @login_required
 def dashboard(request):
+    if request.user.is_superuser:
+        return redirect("index")
+
+
     context = {
         "name": "dashboard"
     }
@@ -170,6 +183,9 @@ def dashboard(request):
 # View function to delete the employee
 @login_required
 def delete_employee(request, id):
+    if request.user.is_superuser:
+        return redirect("index")
+
     try:
         # Getting employee from DB
         employee = Employee.objects.get(id=id)
@@ -190,6 +206,9 @@ def delete_employee(request, id):
 # View function to submit QR code
 @login_required
 def upload_qr_code(request):
+    if request.user.is_superuser:
+        return redirect("index")
+
     if request.method == "POST":
         qr_code = request.FILES['upload_qr_input']
 
@@ -246,6 +265,9 @@ def upload_qr_code(request):
 # View function for all employee page
 @login_required
 def all_employees(request):
+    if request.user.is_superuser:
+        return redirect("index")
+
     all_employees = []
     # try:
     # Get company by admin
@@ -325,8 +347,11 @@ def all_employees(request):
 
 
 # View function to save employee
-@ login_required
+@login_required
 def save_employee(request):
+    if request.user.is_superuser:
+        return redirect("index")
+
     if request.method == "POST":
         # Get form submission
         profile_picture = None
@@ -388,84 +413,95 @@ def save_employee(request):
 
 
 # View function to update employee
-@ login_required
+@login_required
 def update_employee(request):
+    if request.user.is_superuser:
+        return redirect("index")
+
+
     return redirect("login")
 
 
 # View function to render single employee profile
 def single_employee(request, id):
-    # Check if coming request is authenticated
-    if request.user.is_authenticated:
-        if request.method == "POST":
-            # Update employee form
-            if id and len(id) > 0:
-                employee = Employee.objects.filter(id=id)
-                if employee.exists():
-                    employee = employee[0]
+    context = {"error": None}
+    try:
+        # Check if coming request is authenticated
+        if request.user.is_authenticated:
+            if request.method == "POST":
+                # Update employee form
+                if id and len(id) > 0:
+                    employee = Employee.objects.filter(id=id)
+                    if employee.exists():
+                        employee = employee[0]
 
-                    company = get_company_by_admin(request.user)
-                    if employee.company == company:
+                        company = get_company_by_admin(request.user)
+                        if employee.company == company:
 
-                        if 'profile_picture' in request.FILES and request.FILES['profile_picture']:
-                            employee.profile_picture = request.FILES['profile_picture']
-                        is_active = False
-                        telephone = None
-                        is_deleted = True
+                            if 'profile_picture' in request.FILES and request.FILES['profile_picture']:
+                                employee.profile_picture = request.FILES['profile_picture']
+                            is_active = False
+                            telephone = None
+                            is_deleted = True
 
-                        if 'is_active' in request.POST:
-                            employee.activate()
+                            if 'is_active' in request.POST:
+                                employee.activate()
+                            else:
+                                employee.de_activate()
+
+                            if 'telephone' in request.POST:
+                                employee.telephone = request.POST['telephone']
+
+                            # Updating all the details of the database
+                            employee.first_name = request.POST['first_name']
+                            employee.last_name = request.POST['last_name']
+                            employee.email = request.POST['email']
+                            employee.phone = request.POST['phone']
+                            employee.designation = request.POST['designation']
+                            employee.department = request.POST['department']
+                            employee.projects = request.POST['projects']
+                            employee.specialized_in = request.POST['specialized_in']
+                            employee.save()
+
+                            messages.info(
+                                request, "Employee info has been updated successfully!")
                         else:
-                            employee.de_activate()
-
-                        if 'telephone' in request.POST:
-                            employee.telephone = request.POST['telephone']
-
-                        # Updating all the details of the database
-                        employee.first_name = request.POST['first_name']
-                        employee.last_name = request.POST['last_name']
-                        employee.email = request.POST['email']
-                        employee.phone = request.POST['phone']
-                        employee.designation = request.POST['designation']
-                        employee.department = request.POST['department']
-                        employee.projects = request.POST['projects']
-                        employee.specialized_in = request.POST['specialized_in']
-                        employee.save()
-
-                        messages.info(
-                            request, "Employee info has been updated successfully!")
+                            messages.error(
+                                request, "This employee doesn't belong to your company!")
                     else:
-                        messages.error(
-                            request, "This employee doesn't belong to your company!")
+                        messages.error(request, "No employee exists with this id!")
                 else:
-                    messages.error(request, "No employee exists with this id!")
-            else:
-                messages.error(request, "Invalid id!")
+                    messages.error(request, "Invalid id!")
 
-            return redirect(f"/employee/{id}")
+                return redirect(f"/employee/{id}")
 
-    context = {
-        "employee": None,
-        "index": 1
-    }
-    # Getting requested employee profile
-    employee = Employee.objects.filter(id=id)
+        context = {
+            "employee": None,
+            "index": 1
+        }
+        # Getting requested employee profile
+        employee = Employee.objects.filter(id=id)
 
-    if employee.exists():
-        employee = employee[0]
-        context['employee'] = employee
+        if employee.exists():
+            employee = employee[0]
+            context['employee'] = employee
+
+    except Exception as e:
+        context['error'] = str(e)
+        return redirect("index")
+        return render(request, "profile.html", context)
 
     # Rendering the profile version based on
     # the authenticated or not authenticated request
-    if request.user.is_authenticated:
-        return render(request, "profile.html", context)
-    else:
-        return render(request, "temp-profile.html", context)
+    return render(request, "profile.html", context)
 
 
 # View function to edit the company details
-@ login_required
+@login_required
 def edit_company_details(request):
+    if request.user.is_superuser:
+        return redirect("index")
+
     company = get_company_by_admin(request.user)
     if request.method == "POST":
         try:
