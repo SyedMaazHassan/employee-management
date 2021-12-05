@@ -18,9 +18,23 @@
             </div>
         {% endfor %}
          
-          <form class="forms-sample" method="POST" action="">
+          <form class="forms-sample" method="POST" action="" enctype="multipart/form-data">
               {% csrf_token %}
             <div class="row">
+                <div class="col-sm-12 mb-4">
+                    <div style="width: 120px;">
+                        <img src="media/{{ company.logo }}" id="company_logo_show" style="width: 100%;" alt="">
+                        <button type="button" name="" id="" onclick="upload_picture('company_logo_input')" class="btn btn-primary btn-block px-0">Upload logo</button>
+                    </div>
+                    <input 
+                        type="file" 
+                        id="company_logo_input" 
+                        name="company_logo"
+                        onchange="readURL(this, 'company_logo_show')"
+                        style="height: 0px; overflow:hidden; width: 0px;"
+                    >
+                </div>
+
                 <div class="col-sm-4">
                     <div class="form-group">
                         <label>Company name</label>
@@ -108,6 +122,10 @@
 
     $(".qr-sample").show();
     $(".qr-loading").hide();
+
+    setInterval(() => {
+        $("#company_logo_show").css("border-radius", "0px");
+    }, 500);
 
 </script>
 

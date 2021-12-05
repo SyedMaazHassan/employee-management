@@ -512,6 +512,9 @@ def edit_company_details(request):
             founded_in = request.POST['founded_in']
             error_message = "Kindly provide valid values for all fields!"
             # Checking which parameters needs to be changed
+            if 'company_logo' in request.FILES and request.FILES['company_logo']:
+                company_logo = request.FILES['company_logo']
+                company.logo = company_logo
             if name:
                 company.name = name
             else:
